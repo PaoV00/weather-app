@@ -14,11 +14,8 @@ function Home() {
     console.log("Start fetch....");
 
     setIsLoading(true);
-    fetch(`http://localhost:8181/api/location?${city}`, {
+    fetch(`http://localhost:8181/api/location/city/${city}`, {
       method: "GET",
-      header{
-        
-      }
     })
       .then((response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
