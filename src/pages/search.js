@@ -29,22 +29,23 @@ function Search() {
   const userId = 1;
 
   const handleAddLocation = async () => {
-    try {
-        fetch(`http://localhost:8181/api/user/${userId}/favorites`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ locationId: locationData.id }),
-        })
-        .then((response) => {
-            if (!response.ok) {
-            throw new Error("Network response was not ok");
-            }
-            navigate("/");
-        })
-    } catch(error) {
-        console.error("Error adding location to favorites:", error);
-      };
-  };
+    console.log("Adding location to favorites:", locationData);
+  try {
+    const response = await fetch(`http://localhost:8181/api/user/${userId}/favorites`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ locationId: locationData.locationId }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+    }
+    
+    navigate("/");
+  } catch(error) {
+    console.error("Error adding location to favorites:", error);
+  }
+};
 
   return (
     <div>
