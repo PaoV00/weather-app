@@ -74,16 +74,16 @@ export default function Location(props) {
     city && stateCode ? `${city}, ${stateCode}` : city || stateCode || "N/A";
 
   // Safely extract weather data with fallbacks
-  const condition = locationData?.weather?.condition ?? "N/A";
-  const tempC = locationData?.weather?.temperature;
-  const tempHiC = locationData?.weather?.hi_temperature;
-  const tempLoC = locationData?.weather?.low_temperature;
+  const condition = locationData?.weatherDto?.condition ?? "N/A";
+  const tempC = locationData?.weatherDto?.temperature;
+  const tempHiC = locationData?.weatherDto?.hi_temperature;
+  const tempLoC = locationData?.weatherDto?.low_temperature;
 
   // Safely calculate derived values
-  const cloudCoverage = locationData?.weather?.cloudCoverage ?? "N/A";
-  const windSpeedMps = locationData?.weather?.windSpeed ?? 0;
+  const cloudCoverage = locationData?.weatherDto?.cloudCoverage ?? "N/A";
+  const windSpeedMps = locationData?.weatherDto?.windSpeed ?? 0;
   const windSpeed = windSpeedMps !== "N/A" ? windSpeedMps * 2.237 : "N/A";
-  const precipitationMm = locationData?.weather?.precipitation ?? 0;
+  const precipitationMm = locationData?.weatherDto?.precipitation ?? 0;
   const precipitation =
     precipitationMm !== "N/A" ? precipitationMm / 25.4 : "N/A";
 

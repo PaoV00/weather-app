@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Row, Col } from "react-bootstrap";
-import SearchForm from "../components/weather/searchForm";
+import SearchForm from "../components/forms/searchForm";
 import MainCard from "../components/cards/mainCard";
 
 function Search() {
@@ -11,15 +11,16 @@ function Search() {
   const handleLocationSearch = async (payload) => {
     try {
       const response = await fetch(
-        `http://localhost:8181/api/location?city=${encodeURIComponent(payload.city)}&stateCode=${encodeURIComponent(payload.stateCode)}&countryCode=${encodeURIComponent(payload.countryCode)}`,
+        `http://localhost:8181/api/location/lookup?city=${encodeURIComponent(payload.city)}&stateCode=${encodeURIComponent(payload.stateCode)}&countryCode=${encodeURIComponent("US")}`,
         {
-          method: "GET",
+          method: "POST",
         },
       );
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       setLocationData(data);
-      setWeatherData(data.weather);
+      setWeatherData(data.weatherDto);
+      console.log("Fetched location data:", data);
     } catch (error) {
       console.error("Error fetching location data:", error);
     }

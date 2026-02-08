@@ -15,7 +15,7 @@ function MainCard(props) {
     : city || stateCode || "N/A";
 
   // Safely extract weather data with fallbacks
-  const condition = props.location?.weather?.condition ?? "N/A";
+  const condition = props.location?.weatherDto?.condition ?? "N/A";
   const tempC = props.weather?.temperature;
   const tempHiC = props.weather?.hi_temperature;
   const tempLoC = props.weather?.low_temperature;

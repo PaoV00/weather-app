@@ -12,7 +12,6 @@ function Home() {
   //hard code for now
   const city = "Saint Paul";
   const stateCode = "MN";
-  const countryCode = "US";
   const intervalRef = useRef(null);
 
   // Fetching 1 location data
@@ -20,7 +19,7 @@ function Home() {
     try {
       console.log("Fetching location data...");
       const response = await fetch(
-        `http://localhost:8181/api/location?city=${encodeURIComponent(city)}&stateCode=${encodeURIComponent(stateCode)}&countryCode=${encodeURIComponent(countryCode)}`,
+        `http://localhost:8181/api/location/search?city=${encodeURIComponent(city)}&stateCode=${encodeURIComponent(stateCode)}`,
         {
           method: "GET",
         },
@@ -28,7 +27,7 @@ function Home() {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       setLocation(data);
-      setWeatherData(data.weather);
+      setWeatherData(data.weatherDto);
       setLastUpdated(new Date());
       setIsLoading(false);
     } catch (err) {

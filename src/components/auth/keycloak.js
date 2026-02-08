@@ -1,18 +1,11 @@
-import Keycloak from 'keycloak-js';
+import Keycloak from "keycloak-js";
 
 const keycloak = new Keycloak({
-    url: "http://keycloak-server",
-    realm: "Spring-boot-microservices-realm",
-    clientId: "spring-cloud-client"
+  url: "http://localhost:8080",
+  realm: "spring-boot-microservices-realm",
+  clientId: "frontend",
 });
 
-try {
-    const authenticated = await keycloak.init();
-    if (authenticated) {
-        console.log('User is authenticated');
-    } else {
-        console.log('User is not authenticated');
-    }
-} catch (error) {
-    console.error('Failed to initialize adapter:', error);
-}
+window.keycloak = keycloak;
+
+export default keycloak;
