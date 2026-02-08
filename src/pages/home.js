@@ -10,7 +10,7 @@ function Home() {
   const [listOfLocationsId, setListOfLocationsId] = useState([]);
 
   //hard code for now
-  const city = "Duluth";
+  const city = "Saint Paul";
   const stateCode = "MN";
   const countryCode = "US";
   const intervalRef = useRef(null);
