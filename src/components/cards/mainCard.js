@@ -34,9 +34,9 @@ function MainCard(props) {
   const tempHiF = celsiusToFahrenheit(tempHiC);
   const tempLoF = celsiusToFahrenheit(tempLoC);
 
-  const displayTempF = tempF !== null ? tempF.toFixed(1) : "N/A";
-  const displayTempHiF = tempHiF !== null ? tempHiF.toFixed(1) : "N/A";
-  const displayTempLoF = tempLoF !== null ? tempLoF.toFixed(1) : "N/A";
+  const displayTempF = tempF !== null ? tempF.toFixed(0) : "N/A";
+  const displayTempHiF = tempHiF !== null ? tempHiF.toFixed(0) : "N/A";
+  const displayTempLoF = tempLoF !== null ? tempLoF.toFixed(0) : "N/A";
 
   return (
     <Card

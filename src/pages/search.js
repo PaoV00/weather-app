@@ -3,11 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Button, Row, Col } from "react-bootstrap";
 import SearchForm from "../components/forms/searchForm";
 import MainCard from "../components/cards/mainCard";
+import { apiFetch } from "../components/auth/apiFetch";
+import { useSelector } from "react-redux";
 
 function Search() {
   const [locationData, setLocationData] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+
+  //call to location service to grab a location
   const handleLocationSearch = async (payload) => {
     try {
       const response = await fetch(
@@ -26,27 +31,21 @@ function Search() {
     }
   };
 
-  // Hardcode for now
-  const userId = 1;
-
   const handleAddLocation = async () => {
     console.log("Adding location to favorites:", locationData);
-  try {
-    const response = await fetch(`http://localhost:8181/api/user/${userId}/favorites`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ locationId: locationData.locationId }),
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+    try {
+      const userId = user.userId;
+
+      await apiFetch(`/api/user/${userId}/favorites`, {
+        method: "POST",
+        body: JSON.stringify({ locationId: locationData.locationId }),
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error adding location to favorites:", error);
     }
-    
-    navigate("/");
-  } catch(error) {
-    console.error("Error adding location to favorites:", error);
-  }
-};
+  };
 
   return (
     <div>

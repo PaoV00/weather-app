@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { Card, Modal, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../auth/apiFetch";
+import { useAuthState } from "../auth/authState";
+import { useSelector } from "react-redux";
 
 export default function Location(props) {
   const [locationData, setLocationData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated } = useAuthState();
+  const user = useSelector((state) => state.user.user);
 
   const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
@@ -17,29 +22,22 @@ export default function Location(props) {
     setShowConfirm(false);
   }
 
-  //Hard code for nowwwwwwwwwwwwwwwwww
-  const userId = 1;
+  // Delete location from user's favorite list
+  async function handleDelete() {
+    try {
+      const userId = localStorage.getItem("userId");
 
-  function handleDelete() {
-    console.log("Deleting location:", props.id);
-    fetch(
-      `http://localhost:8181/api/user/${userId}/favorites/${props.id}`,
-      {
+      await apiFetch(`/api/user/${userId}/favorites/${props.id}`, {
         method: "DELETE",
-      },
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to remove location");
-        }
-        setShowConfirm(false);
-        navigate(0);
-      })
-      .catch((error) => {
-        console.error("Error removing location:", error);
       });
+      setShowConfirm(false);
+      navigate(0);
+    } catch (error) {
+      console.error("Error removing location:", error);
+    }
   }
 
+  // Call to location service to grab a location
   useEffect(() => {
     fetch(`http://localhost:8181/api/location/${props.id}`)
       .then((response) => response.json())
@@ -99,17 +97,19 @@ export default function Location(props) {
     <div>
       <Card className="container mt-2" style={{ width: "400px" }}>
         {/* Red X button, top right corner */}
-        <div style={{ position: "absolute", top: "10px", right: "10px" }}>
-          <button
-            type="button"
-            className="btn btn-danger btn-sm"
-            aria-label="Delete vehicle"
-            title="Delete vehicle"
-            onClick={handleOpenDelete}
-          >
-            X
-          </button>
-        </div>
+        {isAuthenticated && (
+          <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+            <button
+              type="button"
+              className="btn btn-danger btn-sm"
+              aria-label="Delete location"
+              title="Delete location"
+              onClick={handleOpenDelete}
+            >
+              X
+            </button>
+          </div>
+        )}
         <Card.Title className="mt-4 text-center">{title}</Card.Title>
         <Card.Body>
           <div>

@@ -1,11 +1,19 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import logo from "../images/logo.png";
-import { userAuth } from "./auth/userAuth";
-
+import { useAuthState } from "./auth/authState";
+import keycloak from "./auth/keycloak";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../store/slices/userSlice";
 
 function MainNavigation() {
-  const { isAuthenticated, login, logout, tokenParsed } = userAuth();
+  const { isAuthenticated, tokenParsed } = useAuthState();
+  const dispatch = useDispatch();
+
+  const login = () => keycloak.login();
+  const logout = () => {
+    dispatch(clearUser);
+    keycloak.logout({ redirectUri: window.location.origin })};
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
@@ -28,10 +36,9 @@ function MainNavigation() {
 
             {isAuthenticated && (
               <>
-                <Navbar.Text className="me-3">
+                <Nav.Link as={Link} to="/profile">
                   <strong>{tokenParsed?.preferred_username}</strong>
-                </Navbar.Text>
-
+                </Nav.Link>
                 <Nav.Link onClick={logout}>Logout</Nav.Link>
               </>
             )}
