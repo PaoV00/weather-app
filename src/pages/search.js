@@ -5,12 +5,14 @@ import SearchForm from "../components/forms/searchForm";
 import MainCard from "../components/cards/mainCard";
 import { apiFetch } from "../components/auth/apiFetch";
 import { useSelector } from "react-redux";
+import { useAuthState } from "../components/auth/authState";
 
 function Search() {
   const [locationData, setLocationData] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
+  const { isAuthenticated } = useAuthState();
 
   //call to location service to grab a location
   const handleLocationSearch = async (payload) => {
@@ -56,9 +58,11 @@ function Search() {
           <MainCard location={locationData} weather={weatherData} />
           <Row className="mt-4 justify-content-center">
             <Col xs={12} md="auto">
-              <Button variant="secondary" onClick={handleAddLocation}>
-                Add Location
-              </Button>
+              {isAuthenticated ? (
+                <Button variant="secondary" onClick={handleAddLocation}>
+                  Add Location
+                </Button>
+              ) : null}
             </Col>
           </Row>
         </div>

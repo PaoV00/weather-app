@@ -9,26 +9,42 @@ function Home() {
   const [location, setLocation] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingList, setIsLoadingList] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [listOfLocationsId, setListOfLocationsId] = useState([]);
+  const intervalRef = useRef(null);
   const { isAuthenticated } = useAuthState();
   const user = useSelector((state) => state.user.user);
+  const [iPLocation, setIPLocation] = useState(null);
 
   console.log("current redux user state:", user);
 
-  //hard code for now
-  const city = "Saint Paul";
-  const stateCode = "MN";
-  const intervalRef = useRef(null);
+  useEffect(() => {
+    setIsLoading(true);
+    getIPLocation();
+    
+  },[]);
+
+  const getIPLocation = () => {
+    const resp = fetch(`https://ipapi.co/json`)
+    .then((resp) => resp.json())
+    .then((data) => {
+      setIPLocation(data);
+      setIsLoading(false);
+    })
+  }
 
   // Fetching 1 location data
   const fetchLocationData = async () => {
     try {
+      const city = user !== null ? (user.address !== null ? user.address.city : iPLocation.city) : iPLocation.city;
+      const stateCode = user !== null ? (user.address !== null ? user.address.stateCode : iPLocation.region_code) : iPLocation.region_code;
+      const countryCode = "US";
       console.log("Fetching location data...");
       const response = await fetch(
-        `http://localhost:8181/api/location/search?city=${encodeURIComponent(city)}&stateCode=${encodeURIComponent(stateCode)}`,
+        `http://localhost:8181/api/location/lookup?city=${encodeURIComponent(city)}&stateCode=${encodeURIComponent(stateCode)}&countryCode=${encodeURIComponent(countryCode)}`,
         {
-          method: "GET",
+          method: "POST",
         },
       );
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -36,13 +52,10 @@ function Home() {
       setLocation(data);
       setWeatherData(data.weatherDto);
       setLastUpdated(new Date());
-      setIsLoading(false);
+
     } catch (err) {
       console.error("Error fetching location data:", err);
-      setIsLoading(false);
-    } finally {
-      setIsLoading(false);
-    }
+    } 
   };
 
   // Call to user service to fetch favorite list (list of locationIds)
@@ -55,18 +68,22 @@ function Home() {
 
       const data = await apiFetch(`/api/user/${userId}/favorites`);
       setListOfLocationsId(data);
-      setIsLoading(false);
+      
     } catch (err) {
       console.error("Error fetching list of locations:", err);
-      setIsLoading(false);
+      
     } finally {
-      setIsLoading(false);
+      
     }
   };
 
   // Fetching locations data every 5 minutes
   useEffect(() => {
-    fetchLocationData();
+    console.log("IPLocation: ", iPLocation);
+    if(!isLoading){
+      fetchLocationData();
+    }
+    
     if (isAuthenticated) {
       fetchListOfLocations();
     }
@@ -79,7 +96,7 @@ function Home() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isLoading]);
 
   console.log("Location data:", location);
   console.log("Location list IDs:", listOfLocationsId);
@@ -87,6 +104,7 @@ function Home() {
   if (isLoading) {
     return <p>Loading location...</p>;
   }
+
 
   return (
     <div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Form, InputGroup, Button, Row, Col } from "react-bootstrap";
+import { Form, InputGroup, Button } from "react-bootstrap";
 
-function AddressForm() {
+function AddressForm({onSubmit}) {
   const [number, setNumber] = useState("");
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
@@ -61,6 +61,19 @@ function AddressForm() {
     "WY",
   ];
 
+  function handleSubmit(event){
+    
+    const payload = {
+      number: number,
+      street: street,
+      city: city,
+      zip: zip,
+      stateCode: stateCode,
+      countryCode: "US",
+    }
+    onSubmit(payload);
+  }
+
   return (
     <>
       <Form>
@@ -72,7 +85,7 @@ function AddressForm() {
               placeholder="House number"
               value={number}
               required
-              onChange={(e) => setCity(e.target.value)}
+              onChange={(e) => setNumber(e.target.value)}
             />
           </InputGroup>
         </div>
@@ -83,7 +96,7 @@ function AddressForm() {
               placeholder="Street"
               value={street}
               required
-              onChange={(e) => setCity(e.target.value)}
+              onChange={(e) => setStreet(e.target.value)}
             />
           </InputGroup>
         </div>
@@ -93,17 +106,6 @@ function AddressForm() {
               type="text"
               placeholder="city"
               value={city}
-              required
-              onChange={(e) => setCity(e.target.value)}
-            />
-          </InputGroup>
-        </div>
-        <div className="mt-2 mb-2">
-          <InputGroup>
-            <Form.Control
-              type="text"
-              placeholder="zip"
-              value={zip}
               required
               onChange={(e) => setCity(e.target.value)}
             />
@@ -123,6 +125,27 @@ function AddressForm() {
                 </option>
               ))}
             </Form.Select>
+        </div>
+        <div className="mt-2 mb-2">
+          <InputGroup>
+            <Form.Control
+              type="text"
+              placeholder="zip"
+              value={zip}
+              required
+              onChange={(e) => setZip(e.target.value)}
+            />
+          </InputGroup>
+        </div>
+        <div>
+          <Button
+            variant="primary"
+            className="w-100 mb-3"
+            onClick={handleSubmit}
+          >
+            Set Address
+          </Button>
+
         </div>
       </Form>
     </>

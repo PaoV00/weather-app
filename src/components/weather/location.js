@@ -25,7 +25,7 @@ export default function Location(props) {
   // Delete location from user's favorite list
   async function handleDelete() {
     try {
-      const userId = localStorage.getItem("userId");
+      const userId = user.userId;
 
       await apiFetch(`/api/user/${userId}/favorites/${props.id}`, {
         method: "DELETE",
