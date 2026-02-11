@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, InputGroup, Button } from "react-bootstrap";
 
-function AddressForm({onSubmit}) {
-  const [number, setNumber] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [zip, setZip] = useState("");
-  const [stateCode, setStateCode] = useState("");
+
+function AddressForm({ onSubmit, initialAddress }) {
+  const [number, setNumber] = useState(initialAddress?.number || "");
+  const [street, setStreet] = useState(initialAddress?.street || "");
+  const [city, setCity] = useState(initialAddress?.city || "");
+  const [zip, setZip] = useState(initialAddress?.zip || "");
+  const [stateCode, setStateCode] = useState(initialAddress?.stateCode || "");
 
   const states = [
     "AL",
@@ -61,8 +62,16 @@ function AddressForm({onSubmit}) {
     "WY",
   ];
 
-  function handleSubmit(event){
-    
+  useEffect(() => {
+    setNumber(initialAddress?.number || "");
+    setStreet(initialAddress?.street || "");
+    setCity(initialAddress?.city || "");
+    setZip(initialAddress?.zip || "");
+    setStateCode(initialAddress?.stateCode || "");
+  }, [initialAddress]);
+
+  function handleSubmit(event) {
+    event.preventDefault();
     const payload = {
       number: number,
       street: street,
@@ -70,13 +79,13 @@ function AddressForm({onSubmit}) {
       zip: zip,
       stateCode: stateCode,
       countryCode: "US",
-    }
+    };
     onSubmit(payload);
   }
 
   return (
     <>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <Form.Label>House Number</Form.Label>
         <div className="mt-2">
           <InputGroup>
@@ -113,18 +122,18 @@ function AddressForm({onSubmit}) {
         </div>
         <div className="mt-2 mb-2">
           <Form.Select
-              aria-label="Select State"
-              value={stateCode}
-              required
-              onChange={(e) => setStateCode(e.target.value)}
-            >
-              <option value="">Select State</option>
-              {states.map((state) => (
-                <option key={state} value={state}>
-                  {state}
-                </option>
-              ))}
-            </Form.Select>
+            aria-label="Select State"
+            value={stateCode}
+            required
+            onChange={(e) => setStateCode(e.target.value)}
+          >
+            <option value="">Select State</option>
+            {states.map((state) => (
+              <option key={state} value={state}>
+                {state}
+              </option>
+            ))}
+          </Form.Select>
         </div>
         <div className="mt-2 mb-2">
           <InputGroup>
@@ -138,14 +147,9 @@ function AddressForm({onSubmit}) {
           </InputGroup>
         </div>
         <div>
-          <Button
-            variant="primary"
-            className="w-100 mb-3"
-            onClick={handleSubmit}
-          >
+          <Button type="submit" variant="primary" className="w-100 mb-3">
             Set Address
           </Button>
-
         </div>
       </Form>
     </>
