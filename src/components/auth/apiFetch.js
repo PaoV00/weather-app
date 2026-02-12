@@ -1,10 +1,18 @@
 import keycloak from "./keycloak";
 
 export async function apiFetch(url, options = {}) {
-  const response = await fetch(url, {
+  // Ensure token is fresh
+  if (keycloak.authenticated) {
+    await keycloak.updateToken(30);
+  }
+
+  const response = await fetch(`http://localhost:8181${url}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      ...(keycloak.authenticated && {
+        "Authorization": `Bearer ${keycloak.token}`,
+      }),
       ...(options.headers || {}),
     },
   });

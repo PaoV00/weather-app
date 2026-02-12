@@ -17,17 +17,16 @@ function Search() {
   //call to location service to grab a location
   const handleLocationSearch = async (payload) => {
     try {
-      const response = await fetch(
-        `http://localhost:8181/api/location/lookup?city=${encodeURIComponent(payload.city)}&stateCode=${encodeURIComponent(payload.stateCode)}&countryCode=${encodeURIComponent("US")}`,
+      const response = await apiFetch(
+        `/api/location/lookup?city=${encodeURIComponent(payload.city)}&stateCode=${encodeURIComponent(payload.stateCode)}&countryCode=US`,
         {
           method: "POST",
         },
       );
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      setLocationData(data);
-      setWeatherData(data.weatherDto);
-      console.log("Fetched location data:", data);
+      
+      setLocationData(response);
+      setWeatherData(response.weatherDto);
+      console.log("Fetched location data:", response);
     } catch (error) {
       console.error("Error fetching location data:", error);
     }

@@ -15,7 +15,8 @@ function Profile() {
 
   useEffect(() => {
     if (user && user.address === null) {
-      fetch("https://ipapi.co/json")
+      //https://ipapi.co/json
+      fetch("https://api.ipapi.is")
         .then((resp) => resp.json())
         .then((data) => {
           setIpLocation(data);
